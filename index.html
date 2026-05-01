@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Synapse AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="matrix" aria-hidden="true"></div>
+    <section class="landing" id="landing">
+      <header class="landing-nav">
+        <div class="brand">
+          <img class="logo" src="assets/synapse-pixel-logo.svg" alt="Synapse AI logo">
+          <div>
+            <strong>Synapse AI</strong>
+            <small>multi-agent intelligence platform</small>
+          </div>
+        </div>
+        <div class="landing-actions">
+          <button id="landingLoginBtn">login</button>
+          <button id="landingRegisterBtn">cadastrar</button>
+        </div>
+      </header>
+      <div class="landing-hero">
+        <div class="hero-copy">
+          <span class="eyebrow">orchestrated intelligence / blackbox command layer</span>
+          <h1>Synapse AI</h1>
+          <p>Uma plataforma de IA multi-agente com orquestrador, debate entre agentes, memoria, missoes longas, roteador Groq e um mundo simulado leve para visualizar atividade cognitiva.</p>
+          <div class="hero-buttons">
+            <button id="startFreeBtn">comecar agora</button>
+            <button id="heroDonateBtn">donate $1</button>
+          </div>
+        </div>
+        <div class="hero-terminal" aria-label="Synapse status terminal">
+          <div class="scanline"></div>
+          <span>> boot synapse-core</span>
+          <span>> router: groq multi-model</span>
+          <span>> agents: architect researcher executor critic</span>
+          <span>> marketplace: agent publishing online</span>
+          <span>> admin: protected control layer</span>
+        </div>
+      </div>
+      <div class="landing-auth" id="landingAuth">
+        <div>
+          <h2>Acesse o Synapse</h2>
+          <p>Crie uma conta ou entre para liberar o dashboard, chat, agentes, marketplace, missoes e mundo 3D.</p>
+        </div>
+        <input id="landingEmail" type="email" placeholder="email">
+        <input id="landingPassword" type="password" placeholder="senha">
+        <div class="row">
+          <button id="landingAuthLoginBtn">login</button>
+          <button id="landingAuthRegisterBtn">cadastrar</button>
+        </div>
+        <small id="landingAuthStatus">dashboard protegido por login</small>
+      </div>
+      <div class="feature-strip">
+        <article><strong>Multi-agent</strong><span>Agentes paralelos com papeis, tarefas e memoria.</span></article>
+        <article><strong>Arena</strong><span>Debate mode para comparar respostas e escolher a melhor.</span></article>
+        <article><strong>Missions</strong><span>Tarefas longas quebradas em etapas com progresso.</span></article>
+        <article><strong>Marketplace</strong><span>Publique, baixe e organize agentes reutilizaveis.</span></article>
+      </div>
+      <div class="landing-details">
+        <section>
+          <h2>Como o Synapse pensa</h2>
+          <p>O prompt entra no orquestrador, o sistema escolhe modelos Groq diferentes, cria agentes especializados, executa tarefas em paralelo, revisa a resposta e entrega uma sintese final.</p>
+        </section>
+        <section>
+          <h2>O que existe no dashboard</h2>
+          <p>Historico de conversas, modo rapido, modo profundo, arena de debate, missoes, mundo vivo em canvas, painel admin protegido, logs, configuracao de comportamento e doacao via Stripe.</p>
+        </section>
+        <section>
+          <h2>Feito para ser leve</h2>
+          <p>As partes complexas ficam em rotas serverless. O dashboard exige login, o chat usa Groq, e agentes podem ser criados, organizados e publicados.</p>
+        </section>
+      </div>
+    </section>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="logo" src="assets/synapse-pixel-logo.svg" alt="Synapse AI logo">
+          <div>
+            <strong>Synapse AI</strong>
+            <small>multi-agent command layer</small>
+          </div>
+        </div>
+        <nav class="tabs" id="tabs">
+          <button class="active" data-tab="chat">Chat</button>
+          <button data-tab="agents">Agents</button>
+          <button data-tab="marketplace">Market</button>
+          <button data-tab="missions">Missions</button>
+          <button data-tab="donate">Donate</button>
+          <button data-tab="admin" class="admin-only hidden">Admin</button>
+        </nav>
+        <div class="history-block">
+          <div class="history-head">
+            <span>History</span>
+            <button id="newChatBtn" title="Nova conversa">+</button>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </div>
+        <div class="auth">
+          <input id="email" type="email" placeholder="email">
+          <input id="password" type="password" placeholder="senha">
+          <div class="row">
+            <button id="loginBtn">login</button>
+            <button id="registerBtn">register</button>
+          </div>
+          <button id="logoutBtn" class="hidden">logout</button>
+          <small id="sessionLabel">offline</small>
+        </div>
+        <div class="status">
+          <span>status</span>
+          <strong id="systemStatus">booting</strong>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="panel active" id="chat">
+          <header class="topbar">
+            <div>
+              <h1>Chat</h1>
+              <p>orquestrador, agentes paralelos, arena e memoria</p>
+            </div>
+            <div class="controls">
+              <label><input type="checkbox" id="deepMode" checked> deep</label>
+              <label><input type="checkbox" id="debateMode"> arena</label>
+              <button id="exportBtn">export</button>
+            </div>
+          </header>
+          <div class="chat-grid">
+            <div class="conversation" id="messages"></div>
+            <aside class="right-rail">
+              <div class="agent-panel">
+                <h2>Agents</h2>
+                <div id="agentList"></div>
+              </div>
+              <div class="agent-panel">
+                <h2>Suggestions</h2>
+                <div id="suggestions"></div>
+              </div>
+            </aside>
+          </div>
+          <form class="composer" id="chatForm">
+            <textarea id="prompt" rows="2" placeholder="Digite uma missao, pergunta ou comando para o Synapse..."></textarea>
+            <button type="submit">send</button>
+          </form>
+        </section>
+
+        <section class="panel" id="agents">
+          <header class="topbar">
+            <div>
+              <h1>Agents</h1>
+              <p>crie, organize e controle agentes personalizados</p>
+            </div>
+            <div class="controls">
+              <button id="newFolderBtn">new folder</button>
+              <button id="createAgentBtn">create agent</button>
+            </div>
+          </header>
+          <div class="agents-layout">
+            <aside class="folders" id="folderList"></aside>
+            <div class="agent-manager">
+              <form class="agent-form" id="agentForm">
+                <input id="agentName" placeholder="nome do agente">
+                <input id="agentRole" placeholder="role">
+                <textarea id="agentPrompt" rows="4" placeholder="system prompt / comportamento"></textarea>
+                <select id="agentFolder"></select>
+                <button>save agent</button>
+              </form>
+              <div class="agent-library" id="agentLibrary"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="marketplace">
+          <header class="topbar">
+            <div>
+              <h1>Marketplace</h1>
+              <p>baixe agentes ou publique os seus</p>
+            </div>
+            <div class="controls">
+              <button id="publishAgentBtn">publish selected</button>
+            </div>
+          </header>
+          <div class="market-grid" id="marketGrid"></div>
+        </section>
+
+        <section class="panel" id="missions">
+          <header class="topbar">
+            <div>
+              <h1>Missions</h1>
+              <p>tarefas longas quebradas em etapas</p>
+            </div>
+          </header>
+          <form class="mission-form" id="missionForm">
+            <input id="missionTitle" placeholder="nome da missao">
+            <button>create mission</button>
+          </form>
+          <div class="mission-list" id="missionList"></div>
+        </section>
+
+        <section class="panel" id="donate">
+          <header class="topbar">
+            <div>
+              <h1>Donate</h1>
+              <p>apoie o desenvolvimento do Synapse AI</p>
+            </div>
+          </header>
+          <div class="donate-layout">
+            <div class="donate-card">
+              <span class="donate-price">$1</span>
+              <h2>Synapse Supporter</h2>
+              <p>Uma contribuicao simples para ajudar a manter a infraestrutura, melhorar os agentes e acelerar novas funcoes.</p>
+              <button id="donateBtn">donate with stripe</button>
+              <small id="donateStatus">checkout seguro via Stripe</small>
+            </div>
+            <div class="donate-card">
+              <h2>O que isso ajuda a manter</h2>
+              <ul>
+                <li>Chamadas Groq para agentes paralelos.</li>
+                <li>Banco Supabase para memoria e missoes.</li>
+                <li>Novos modos de debate e simulacao.</li>
+                <li>Ferramentas admin e seguranca.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="admin">
+          <header class="topbar">
+            <div>
+              <h1>Admin</h1>
+              <p>controle do sistema e comportamento da IA</p>
+            </div>
+          </header>
+          <div class="admin-grid">
+            <div class="admin-card">
+              <h2>AI Control Panel</h2>
+              <textarea id="aiDirective" rows="5" placeholder="what should the AI do"></textarea>
+              <button id="saveDirectiveBtn">save config</button>
+            </div>
+            <div class="admin-card">
+              <h2>Users</h2>
+              <div id="usersList">service role necessario para listar usuarios reais</div>
+            </div>
+            <div class="admin-card">
+              <h2>Logs</h2>
+              <div class="log" id="logsPanel"></div>
+            </div>
+            <div class="admin-card">
+              <h2>System Settings</h2>
+              <label>abuse guard <input id="abuseGuard" type="checkbox" checked></label>
+              <label>max agents <input id="maxAgents" type="number" min="1" max="12" value="5"></label>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
