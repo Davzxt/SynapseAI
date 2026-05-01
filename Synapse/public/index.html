@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Synapse AI</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <div class="matrix" aria-hidden="true"></div>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="mark">SYN</span>
+          <div>
+            <strong>Synapse AI</strong>
+            <small>multi-agent command layer</small>
+          </div>
+        </div>
+        <nav class="tabs" id="tabs">
+          <button class="active" data-tab="chat">Chat</button>
+          <button data-tab="world">World</button>
+          <button data-tab="missions">Missions</button>
+          <button data-tab="admin" class="admin-only hidden">Admin</button>
+        </nav>
+        <div class="auth">
+          <input id="email" type="email" placeholder="email">
+          <input id="password" type="password" placeholder="senha">
+          <div class="row">
+            <button id="loginBtn">login</button>
+            <button id="registerBtn">register</button>
+          </div>
+          <button id="logoutBtn" class="hidden">logout</button>
+          <small id="sessionLabel">offline</small>
+        </div>
+        <div class="status">
+          <span>status</span>
+          <strong id="systemStatus">booting</strong>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="panel active" id="chat">
+          <header class="topbar">
+            <div>
+              <h1>Chat</h1>
+              <p>orquestrador, agentes paralelos, arena e memoria</p>
+            </div>
+            <div class="controls">
+              <label><input type="checkbox" id="deepMode" checked> deep</label>
+              <label><input type="checkbox" id="debateMode"> arena</label>
+              <button id="exportBtn">export</button>
+              <button id="worldOpenBtn">open world viewer</button>
+            </div>
+          </header>
+          <div class="chat-grid">
+            <div class="conversation" id="messages"></div>
+            <aside class="right-rail">
+              <div class="mini-world">
+                <canvas id="miniWorld" width="360" height="220"></canvas>
+              </div>
+              <div class="agent-panel">
+                <h2>Agents</h2>
+                <div id="agentList"></div>
+              </div>
+              <div class="agent-panel">
+                <h2>Suggestions</h2>
+                <div id="suggestions"></div>
+              </div>
+            </aside>
+          </div>
+          <form class="composer" id="chatForm">
+            <textarea id="prompt" rows="2" placeholder="Digite uma missao, pergunta ou comando para o Synapse..."></textarea>
+            <button type="submit">send</button>
+          </form>
+        </section>
+
+        <section class="panel" id="world">
+          <header class="topbar">
+            <div>
+              <h1>Synapse World</h1>
+              <p>simulacao leve de agentes vivos</p>
+            </div>
+            <div class="controls">
+              <button id="spawnAgentBtn">spawn agent</button>
+              <button id="saveWorldBtn">save state</button>
+            </div>
+          </header>
+          <canvas id="worldCanvas" width="1200" height="620"></canvas>
+          <div class="log" id="worldLog"></div>
+        </section>
+
+        <section class="panel" id="missions">
+          <header class="topbar">
+            <div>
+              <h1>Missions</h1>
+              <p>tarefas longas quebradas em etapas</p>
+            </div>
+          </header>
+          <form class="mission-form" id="missionForm">
+            <input id="missionTitle" placeholder="nome da missao">
+            <button>create mission</button>
+          </form>
+          <div class="mission-list" id="missionList"></div>
+        </section>
+
+        <section class="panel" id="admin">
+          <header class="topbar">
+            <div>
+              <h1>Admin</h1>
+              <p>controle do sistema e comportamento da IA</p>
+            </div>
+          </header>
+          <div class="admin-grid">
+            <div class="admin-card">
+              <h2>AI Control Panel</h2>
+              <textarea id="aiDirective" rows="5" placeholder="what should the AI do"></textarea>
+              <button id="saveDirectiveBtn">save config</button>
+            </div>
+            <div class="admin-card">
+              <h2>Users</h2>
+              <div id="usersList">service role necessario para listar usuarios reais</div>
+            </div>
+            <div class="admin-card">
+              <h2>Logs</h2>
+              <div class="log" id="logsPanel"></div>
+            </div>
+            <div class="admin-card">
+              <h2>System Settings</h2>
+              <label>abuse guard <input id="abuseGuard" type="checkbox" checked></label>
+              <label>max agents <input id="maxAgents" type="number" min="1" max="12" value="5"></label>
+              <label>world cycle ms <input id="worldCycle" type="number" min="500" value="2400"></label>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
